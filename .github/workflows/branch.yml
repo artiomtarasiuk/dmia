@@ -1,0 +1,35 @@
+name: Branch
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+
+env:
+  PYTHON_VERSION: 3.8
+  PIP_VERSION: 22.0.3
+
+jobs:
+
+  test:
+
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Set up python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir -U pip==${{ env.PIP_VERSION }}
+          pip install --no-cache-dir -e .[format]
+
+      - name: Run tests
+        run: make test
